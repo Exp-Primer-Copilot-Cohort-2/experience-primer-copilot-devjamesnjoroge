@@ -1,30 +1,17 @@
-// create web server
-// create a web server that listens on port 3000
-// and serves the comments.html file
-// which is in the public directory
+// Create web server
+const express = require('express');
+const path = require('path');
+const app = express();
 
-const http = require('http')
-const fs = require('fs')
-const path = require('path')
+// Add the path of the static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        const filePath = path.join(__dirname, 'public', 'comments.html')
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.writeHead(500, { 'Content-Type': 'text/plain' })
-                res.end('500 - Internal Server Error')
-                return
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html' })
-            res.end(data)
-        })
-    } else {
-        res.writeHead(404, { 'Content-Type': 'text/plain' })
-        res.end('404 - Page Not Found')
-    }
-})
+// Create a route for the comments
+app.get('/comments', (req, res) => {
+  res.sendFile(path.join(__dirname, 'comments.html'));
+});
 
-server.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000')
-})
+// Start the server
+app.listen(3000, () => {
+  console.log('Server started on http://localhost:3000');
+});
